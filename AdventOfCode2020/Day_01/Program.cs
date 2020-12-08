@@ -19,7 +19,20 @@ namespace Day_01
         /// <returns></returns>
         internal static int GetAnswer1()
         {
-            
+            for (int i = 0; i < input.Length; i++)
+            {
+                int a = input[i];
+                for (int j = 0; j < input.Length; j++)
+                {
+                    if (j == i)
+                        continue;
+
+                    int b = input[j];
+                    if (a + b == 2020)
+                        return a * b;
+                }
+            }
+
             return 0;
         }
 
