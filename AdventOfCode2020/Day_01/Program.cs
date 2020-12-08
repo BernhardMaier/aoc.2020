@@ -6,7 +6,11 @@ namespace Day_01
     {
         static void Main(string[] args)
         {
-            Console.WriteLine($"The answers for {typeof(Program).Namespace.Replace('_', ' ')} are {GetAnswer1()} and {GetAnswer2()}.");
+            string output = $"## The answers for {typeof(Program).Namespace.Replace('_', ' ')} are {GetAnswer1()} and {GetAnswer2()} ##";
+
+            Console.WriteLine(new string('#', output.Length));
+            Console.WriteLine(output);
+            Console.WriteLine(new string('#', output.Length));
         }
 
         /// <summary>
@@ -15,11 +19,8 @@ namespace Day_01
         /// <returns></returns>
         internal static int GetAnswer1()
         {
-            int answer1 = 0;
-
-            //TODO
-
-            return answer1;
+            
+            return 0;
         }
 
         /// <summary>
@@ -28,11 +29,28 @@ namespace Day_01
         /// <returns></returns>
         internal static int GetAnswer2()
         {
-            int answer2 = 0;
+            for (int i = 0; i < input.Length; i++)
+            {
+                int a = input[i];
+                for (int j = 0; j < input.Length; j++)
+                {
+                    if (j == i)
+                        continue;
 
-            //TODO
+                    int b = input[j];
+                    for (int k = 0; k < input.Length; k++)
+                    {
+                        if (k == j || k == i)
+                            continue;
 
-            return answer2;
+                        int c = input[k];
+                        if (a + b + c == 2020)
+                            return a * b * c;
+                    }
+                }
+            }
+
+            return 0;
         }
 
         internal static readonly int[] input = new int[]
