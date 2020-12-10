@@ -2,4 +2,9 @@
 
 WriteLine("Hello World!");
 
-record Data(int A, int B);
+record DataA(int A, int B);
+record DataB
+{
+    public int A { get; init; }
+    public int B { get; init; }
+}
