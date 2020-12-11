@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using static System.Console;
 
@@ -14,35 +15,51 @@ WriteLine(new string('#', output.Length));
 int GetAnswer1()
 {
     string[] input = GetInput();
-    int result = 0;
-    (int x, int y) currentCoordinates = (0, 0);
 
-    while(currentCoordinates.y < input.Length)
-    {
-        result += checkCoordinatesOnTree(input, currentCoordinates);
-        currentCoordinates = GetNextCoordinates(currentCoordinates);
-    }
-
-    return result;
+    return checkSlopeForTrees(input, (3,1));
 }
 
 /// <summary>
 /// Gets the answer for the second question of a day
 /// </summary>
 /// <returns></returns>
-int GetAnswer2()
+double GetAnswer2()
 {
     string[] input = GetInput();
-    int result = 0;
+    double result = 1;
+    List<(int x, int y)> slopes = new List<(int x, int y)>
+    {
+        (1,1),
+        (3,1),
+        (5,1),
+        (7,1),
+        (1,2)
+    };
 
-    //TODO
+    foreach ((int x, int y) slope in slopes)
+        result *= checkSlopeForTrees(input, slope);
 
     return result;
+}
+
+int checkSlopeForTrees(string[] input, (int x, int y) slope)
+{
+    int treesOnSlope = 0;
+    (int x, int y) currentCoordinates = (0, 0);
+
+    while (currentCoordinates.y < input.Length)
+    {
+        treesOnSlope += checkCoordinatesOnTree(input, currentCoordinates);
+        currentCoordinates = GetNextCoordinatesOnSlope(currentCoordinates, slope);
+    }
+
+    return treesOnSlope;
 }
 
 int checkCoordinatesOnTree(string[] input, (int x, int y) coordinates)
 {
     char value = GetValueForCoordinates(input, coordinates);
+
     return (value == '#') ? 1 : 0 ;
 }
 
@@ -54,9 +71,12 @@ char GetValueForCoordinates(string[] input, (int x, int y) coordinates)
     return c;
 }
 
-(int x, int y) GetNextCoordinates((int x, int y) coordinates)
+(int x, int y) GetNextCoordinatesOnSlope((int x, int y) coordinates, (int x, int y) slope)
 {
-    return (coordinates.x + 3, coordinates.y + 1);
+    int newX = coordinates.x + slope.x;
+    int newY = coordinates.y + slope.y;
+
+    return (newX, newY);
 }
 
 /// <summary>
