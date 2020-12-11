@@ -29,52 +29,62 @@ int GetAnswer1(string[] input)
 /// <returns></returns>
 int GetAnswer2(string[] input)
 {
-    int result = 0;
-
-    //TODO
-
-    return result;
-}
-
-void GetAllKeys(List<Dictionary<string, string>> passports)
-{
-    Dictionary<string, int> keys = new Dictionary<string, int>();
-    foreach (Dictionary<string, string> passport in passports)
-    {
-        foreach (string key in passport.Keys)
-        {
-            if (keys.ContainsKey(key))
-                keys[key] += 1;
-            else
-                keys[key] = 0;
-        }
-    }
-}
-
-int CheckPassports(List<Dictionary<string, string>> passports)
-{
-    int result = 0;
-
-    foreach (Dictionary<string, string> passport in passports)
-        result += CheckPassport(passport);
+    List<Dictionary<string, string>> passports = GetPassports(input);
+    int result = CheckPassports(passports, true);
 
     return result;
 }
 
-int CheckPassport(Dictionary<string, string> passport)
+int CheckPassports(List<Dictionary<string, string>> passports, bool explicitly = false)
+{
+    int result = 0;
+
+    foreach (Dictionary<string, string> passport in passports)
+        result += CheckPassport(passport, explicitly);
+
+    return result;
+}
+
+int CheckPassport(Dictionary<string, string> passport, bool explicitly = false)
 {
     passport.Remove("cid");
-    if (passport.Keys.Count == 7)
-        return 1;
-    else
-        return 0;
 
-    //string[] reqFields = new string[] { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid" };
-    //foreach (string reqField in reqFields)
-    //    if (!passport.ContainsKey(reqField))
-    //        return 0;
+    if (!explicitly)
+        if (passport.Keys.Count == 7)
+            return 1;
+        else
+            return 0;
 
-    //return 1;
+    foreach (string key in passport.Keys)
+        if(!IsValid(key, passport[key]))
+            return 0;
+
+    return 1;
+}
+
+bool IsValid(string field, string value)
+{
+    int parsedInt;
+    switch (field)
+    {
+        case "byr":
+            return (value.Length == 4 && int.TryParse(value, out parsedInt) && parsedInt >= 1920 && parsedInt <= 2002);
+        case "iyr":
+            return (value.Length == 4 && int.TryParse(value, out parsedInt) && parsedInt >= 2010 && parsedInt <= 2020);
+        case "eyr":
+            return (value.Length == 4 && int.TryParse(value, out parsedInt) && parsedInt >= 2020 && parsedInt <= 2030);
+        case "hgt":
+            return ((value.EndsWith("cm") && int.TryParse(value.Replace("cm", ""), out parsedInt) && parsedInt >= 150 && parsedInt <= 193) ||
+                    (value.EndsWith("in") && int.TryParse(value.Replace("cm", ""), out parsedInt) && parsedInt >= 59 && parsedInt <= 76));
+        case "hcl":
+            return (System.Text.RegularExpressions.Regex.IsMatch(value, @"\A\b[0-9a-fA-F]+\b\Z"));
+        case "ecl":
+            return ("amb-blu-brn-gry-grn-hzl-oth".Contains(value));
+        case "pid":
+            return (value.Length == 9 && int.TryParse(value, out parsedInt));
+        default:
+            return false;
+    }
 }
 
 List<Dictionary<string, string>> GetPassports(string[] input)
