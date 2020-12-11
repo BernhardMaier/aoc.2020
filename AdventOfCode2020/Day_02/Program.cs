@@ -19,7 +19,7 @@ int GetAnswer1()
     for (int i = 0; i < input.Length; i++)
     {
         string s = input[i];
-        validPasswords += checkPassword(ParseString(s));
+        validPasswords += checkPassword_Part1(ParseString(s));
     }
 
     return validPasswords;
@@ -32,17 +32,32 @@ int GetAnswer1()
 int GetAnswer2()
 {
     string[] input = GetInput();
+    int validPasswords = 0;
 
-    //TODO
+    for (int i = 0; i < input.Length; i++)
+    {
+        string s = input[i];
+        validPasswords += checkPassword_Part2(ParseString(s));
+    }
 
-    return 0;
+
+    return validPasswords;
 }
 
-int checkPassword((int min, int max, char c, string password) input)
+int checkPassword_Part1((int min, int max, char c, string password) input)
 {
     int count = input.password.Count(x => x == input.c);
 
     return (count >= input.min && count <= input.max) ? 1 : 0 ;
+}
+
+int checkPassword_Part2((int min, int max, char c, string password) input)
+{
+    char c1 = input.password[input.min - 1];
+    char c2 = input.password[input.max - 1];
+    int count = input.password.Count(x => x == input.c);
+
+    return (c1 != c2 && (c1 == input.c || c2 == input.c)) ? 1 : 0 ;
 }
 
 (int min, int max, char c, string password) ParseString(string input)
