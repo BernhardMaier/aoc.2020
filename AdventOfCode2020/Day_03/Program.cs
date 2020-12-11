@@ -15,8 +15,13 @@ int GetAnswer1()
 {
     string[] input = GetInput();
     int result = 0;
+    (int x, int y) currentCoordinates = (0, 0);
 
-    //TODO
+    while(currentCoordinates.y < input.Length)
+    {
+        result += checkCoordinatesOnTree(input, currentCoordinates);
+        currentCoordinates = GetNextCoordinates(currentCoordinates);
+    }
 
     return result;
 }
@@ -33,6 +38,25 @@ int GetAnswer2()
     //TODO
 
     return result;
+}
+
+int checkCoordinatesOnTree(string[] input, (int x, int y) coordinates)
+{
+    char value = GetValueForCoordinates(input, coordinates);
+    return (value == '#') ? 1 : 0 ;
+}
+
+char GetValueForCoordinates(string[] input, (int x, int y) coordinates)
+{
+    string s = input[coordinates.y];
+    char c = s[coordinates.x % s.Length];
+
+    return c;
+}
+
+(int x, int y) GetNextCoordinates((int x, int y) coordinates)
+{
+    return (coordinates.x + 3, coordinates.y + 1);
 }
 
 /// <summary>
