@@ -64,27 +64,66 @@ int CheckPassport(Dictionary<string, string> passport, bool explicitly = false)
 
 bool IsValid(string field, string value)
 {
-    int parsedInt;
     switch (field)
     {
         case "byr":
-            return (value.Length == 4 && int.TryParse(value, out parsedInt) && parsedInt >= 1920 && parsedInt <= 2002);
+            return CheckYear(value, 1920, 2002);
         case "iyr":
-            return (value.Length == 4 && int.TryParse(value, out parsedInt) && parsedInt >= 2010 && parsedInt <= 2020);
+            return CheckYear(value, 2010, 2020);
         case "eyr":
-            return (value.Length == 4 && int.TryParse(value, out parsedInt) && parsedInt >= 2020 && parsedInt <= 2030);
+            return CheckYear(value, 2020, 2030);
         case "hgt":
-            return ((value.EndsWith("cm") && int.TryParse(value.Replace("cm", ""), out parsedInt) && parsedInt >= 150 && parsedInt <= 193) ||
-                    (value.EndsWith("in") && int.TryParse(value.Replace("cm", ""), out parsedInt) && parsedInt >= 59 && parsedInt <= 76));
+            return CheckHeight(value);
         case "hcl":
-            return (System.Text.RegularExpressions.Regex.IsMatch(value, @"\A\b[0-9a-fA-F]+\b\Z"));
+            return CheckHairColor(value);
         case "ecl":
-            return ("amb-blu-brn-gry-grn-hzl-oth".Contains(value));
+            return CheckEyeColor(value);
         case "pid":
-            return (value.Length == 9 && int.TryParse(value, out parsedInt));
+            return CheckPid(value);
         default:
             return false;
     }
+}
+
+bool CheckYear(string value, int min, int max)
+{
+    bool valid;
+    valid = value.Length == 4 && int.TryParse(value, out int parsedInt) && parsedInt >= min && parsedInt <= max;
+    return valid;
+}
+
+bool CheckHeight(string value)
+{
+    bool valid = false;
+
+    if (value.EndsWith("cm"))
+        valid = int.TryParse(value.Replace("cm", ""), out int parsedInt) && parsedInt >= 150 && parsedInt <= 193;
+
+    if (value.EndsWith("in"))
+        valid = int.TryParse(value.Replace("in", ""), out int parsedInt) && parsedInt >= 59 && parsedInt <= 76;
+
+    return valid;
+}
+
+bool CheckHairColor(string value)
+{
+    bool valid;
+    valid = System.Text.RegularExpressions.Regex.IsMatch(value, @"#[0-9a-fA-F]{6}");
+    return valid;
+}
+
+bool CheckEyeColor(string value)
+{
+    bool valid;
+    valid = "|amb|blu|brn|gry|grn|hzl|oth|".Contains(value);
+    return valid;
+}
+
+bool CheckPid(string value)
+{
+    bool valid;
+    valid = value.Length == 9 && int.TryParse(value, out int parsedInt);
+    return valid;
 }
 
 List<Dictionary<string, string>> GetPassports(string[] input)
