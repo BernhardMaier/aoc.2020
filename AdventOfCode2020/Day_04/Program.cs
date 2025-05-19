@@ -108,7 +108,7 @@ bool CheckHeight(string value)
 bool CheckHairColor(string value)
 {
     bool valid;
-    valid = System.Text.RegularExpressions.Regex.IsMatch(value, @"#[0-9a-fA-F]{6}");
+    valid = System.Text.RegularExpressions.Regex.IsMatch(value, @"#[0-9a-f]{6}");
     return valid;
 }
 
@@ -122,7 +122,7 @@ bool CheckEyeColor(string value)
 bool CheckPid(string value)
 {
     bool valid;
-    valid = value.Length == 9 && int.TryParse(value, out int parsedInt);
+    valid = value.Length == 9 && int.TryParse(value, out int parsedInt) && parsedInt >= 1 && parsedInt <= 999999999;
     return valid;
 }
 
